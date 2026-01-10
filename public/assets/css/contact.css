@@ -1,0 +1,72 @@
+/* ===== CONTACT PAGE ===== */
+
+body {
+    background-color: #f5f7fb;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Titre */
+.title {
+    color: #111827;
+}
+
+/* Paragraphes */
+p {
+    font-size: 15px;
+    color: #6b7280;
+}
+
+/* Cartes */
+.card {
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+/* Inputs */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #e5e7eb;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #2563eb;
+    box-shadow: none;
+}
+
+/* Bouton */
+.btn-primary {
+    background-color: #2563eb;
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #1e40af;
+}
+
+/* Image */
+img {
+    max-height: 280px;
+    object-fit: cover;
+}
+
+/* Réseaux sociaux */
+.bi {
+    font-size: 20px;
+    color: #2563eb;
+}
+
+.bi:hover {
+    color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .text-end {
+        text-align: center !important;
+    }
+}

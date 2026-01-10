@@ -1,0 +1,26 @@
+/* STRUCTURE DE BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.main-content {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+    width: calc(100% - 260px); /* 260px = largeur sidebar */
+}
+
+/* Si votre sidebar a une largeur différente, ajustez */
+.sidebar {
+    width: 260px; /* Doit correspondre à votre sidebar */
+}

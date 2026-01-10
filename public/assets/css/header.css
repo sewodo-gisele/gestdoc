@@ -1,0 +1,184 @@
+/* ===== HEADER STYLES ===== */
+header.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10%;
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* LOGO AVEC IMAGE + TEXTE */
+header.main-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+header.main-header .logo-img {
+    height: 45px; /* Ajustez cette valeur selon votre logo */
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+header.main-header .logo span {
+    font-weight: bold;
+    font-size: 24px;
+    color: #1a4a7a;
+}
+
+/* NAV au CENTRE */
+header.main-header nav.main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin: 0 20px;
+}
+
+header.main-header nav.main-nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+/* Style pour le lien actif */
+header.main-header nav.main-nav a.active {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+/* BOUTON à DROITE */
+header.main-header .btn-connect {
+    background-color: #f39c12;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* Hover effects */
+header.main-header nav.main-nav a:hover {
+    color: #f39c12;
+}
+
+header.main-header .btn-connect:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+}
+
+/* Icônes */
+header.main-header nav.main-nav a i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    header.main-header {
+        padding: 15px 5%;
+        flex-wrap: wrap;
+    }
+    
+    header.main-header .logo {
+        order: 1;
+        flex: 0 0 100%;
+        text-align: center;
+        margin-bottom: 15px;
+        justify-content: center;
+    }
+    
+    header.main-header nav.main-nav {
+        order: 2;
+        flex: 1;
+        justify-content: center;
+        margin: 0;
+    }
+    
+    header.main-header .btn-connect {
+        order: 3;
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    header.main-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    header.main-header .logo {
+        order: 1;
+        margin-bottom: 0;
+        gap: 8px;
+    }
+    
+    header.main-header .logo-img {
+        height: 40px; /* Réduire sur mobile */
+    }
+    
+    header.main-header .logo span {
+        font-size: 22px;
+    }
+    
+    header.main-header nav.main-nav {
+        order: 2;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0;
+    }
+    
+    header.main-header nav.main-nav a {
+        margin: 0 10px;
+        font-size: 14px;
+    }
+    
+    header.main-header .btn-connect {
+        order: 3;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    header.main-header .logo-img {
+        height: 35px;
+    }
+    
+    header.main-header .logo span {
+        font-size: 20px;
+    }
+    
+    header.main-header nav.main-nav {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    header.main-header nav.main-nav a {
+        margin: 5px 0;
+    }
+}
