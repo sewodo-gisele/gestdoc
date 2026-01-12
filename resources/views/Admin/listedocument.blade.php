@@ -58,7 +58,7 @@
       
     <section class="documents-section">
         <div class="section-header">
-            <h3>Tous les documents ({{ $documents->count() }})</h3>
+            <h3> Les documents recents ({{ $documents->count() }})</h3>
         </div>
         
         <table>

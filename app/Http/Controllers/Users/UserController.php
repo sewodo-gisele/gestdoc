@@ -14,7 +14,7 @@ class UserController extends Controller
         $users = User::all(); 
 
         // Retourne la vue en passant la variable $users
-        return view('Admin.utilisateurs', compact('users'));
+        return view('admin.utilisateurs', compact('users'));
     }
 
     public function show($id)
@@ -64,7 +64,7 @@ class UserController extends Controller
         $user->delete();
 
         // Redirige vers la liste des utilisateurs avec un message de succès
-        return redirect()->route('Admin.utilisateurs')->with('success', 'Utilisateur supprimé avec succès.');
+        return redirect()->route('admin.utilisateurs')->with('success', 'Utilisateur supprimé avec succès.');
     }
     
 }

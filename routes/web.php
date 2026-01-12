@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\DocumentController;
-
-
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Users\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,7 +36,9 @@ Route::get('/user/documents', [DocumentController::class, 'documentList'])->name
 
 // Route vers la liste des documents pour l'admin
 Route::get('/admin/listedocument', [Dashboard::class, 'listedocument'])->name('admin.listedocument');
+// Route::get('/admin/utilisateur', [Dashboard::class, 'listedocument'])->name('admin.listedocument');
 // Route vers la gestion des utilisateurs pour l'admin
+Route::get('/admin/utilisateurs', [UserController::class, 'utilisateur'])->name('admin.utilisateurs');
 Route::get('/admin/utilisateurs', [Dashboard::class, 'utilisateur'])->name('admin.utilisateurs');
 // Route vers la liste des utilisateurs pour l'admin
 
@@ -57,3 +59,5 @@ Route::get('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'sh
 Route::get('/users/{id}/edit', [App\Http\Controllers\Users\UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'destroy'])->name('users.destroy');
+
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');

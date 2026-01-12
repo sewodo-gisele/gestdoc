@@ -40,7 +40,7 @@
                 <div class="card border-0 shadow-sm p-4">
                     <h5 class="fw-bold mb-4">Envoyez-nous un message</h5>
 
-                    <form method="POST" action="">
+                    <form method="POST" action="{{ route('contact.send') }}">
                         @csrf
 
                         <div class="row mb-3">

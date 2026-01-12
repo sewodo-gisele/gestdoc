@@ -165,7 +165,7 @@
         z-index: 1;
         letter-spacing: -0.5px;
     ">
-        Liste des documents
+        Liste des utilisateurs
     </h2>
     
     <div class="user-info" style="
@@ -188,7 +188,7 @@
                 font-size: 15px;
                 letter-spacing: 0.3px;
             ">
-                Admin
+                
             </span>
         </div>
         
@@ -210,7 +210,7 @@
             position: relative;
             overflow: hidden;
         ">
-            AD
+           
             <div style="
                 position: absolute;
                 bottom: 0;

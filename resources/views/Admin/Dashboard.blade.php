@@ -2,9 +2,6 @@
 @section('title', 'Tableau de bord Admin')
 @section('content')
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de bord Administrateur - Gest-Docs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -26,8 +23,8 @@
         }
 
         /* ===== ESPACEMENT ENTRE SECTIONS MAJEURES ===== */
-        section, .dashboard-cards, .header, .card {
-            margin-bottom: 35px; /* Espace uniforme pour aérer */
+        section, .dashboard-cards, .header, .graph-card {
+            margin-bottom: 35px;
         }
 
         /* ===== HEADER ===== */
@@ -75,7 +72,6 @@
             border: none;
             color: #7f8c8d;
             cursor: pointer;
-            padding: 0 5px;
         }
 
         .user-avatar {
@@ -98,18 +94,17 @@
             gap: 25px;
         }
 
-        .card {
+        .stat-card {
             background-color: white;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
             border: 1px solid #eaeaea;
         }
 
-        .card:hover {
+        .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         .card-icon {
@@ -127,21 +122,11 @@
         .card-users .card-icon { background-color: #f0f7f0; color: #27ae60; }
         .card-files .card-icon { background-color: #f9f0f7; color: #9b59b6; }
 
-        .card-title {
-            font-size: 1rem;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .card-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
+        .card-title { font-size: 1rem; color: #7f8c8d; margin-bottom: 10px; font-weight: 600; }
+        .card-value { font-size: 2.5rem; font-weight: 700; color: #2c3e50; }
 
         /* ===== TABLE SECTIONS ===== */
-        .table-section, .documents-section {
+        .documents-section {
             background-color: white;
             border-radius: 12px;
             padding: 25px;
@@ -150,9 +135,6 @@
         }
 
         .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 25px;
         }
 
@@ -184,7 +166,6 @@
             color: #2c3e50;
         }
 
-        /* Badges Statut */
         .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .bg-success { background: #dcfce7; color: #166534; }
         .bg-danger { background: #fee2e2; color: #991b1b; }
@@ -193,17 +174,25 @@
         .actions-cell { display: flex; gap: 10px; align-items: center; }
         .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: #6b7280; }
 
+        .graph-card {
+            padding: 25px; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
+        }
+
         footer {
             text-align: center;
             padding: 20px;
             color: #7f8c8d;
             font-size: 0.9rem;
-            border-top: 1px solid #eee;
             margin-top: 40px;
         }
     </style>
 
     <main class="main-content">
+        {{-- 1. HEADER --}}
         <div class="header">
             <h2>Tableau de bord Administrateur</h2>
             <div class="user-info">
@@ -221,34 +210,28 @@
             </div>
         </div>
 
+        {{-- 2. CARTES STATS --}}
         <div class="dashboard-cards">
-            <div class="card card-documents">
+            <div class="stat-card card-documents">
                 <div class="card-icon"><i class="fas fa-file-alt"></i></div>
                 <div class="card-title">Documents totaux</div>
                 <div class="card-value">{{ $totalDoc ?? 0 }}</div>
             </div>
             
-            <div class="card card-users">
+            <div class="stat-card card-users">
                 <div class="card-icon"><i class="fas fa-users"></i></div>
                 <div class="card-title">Utilisateurs</div>
                 <div class="card-value">{{ $totalUsers ?? 0 }}</div>
             </div>
             
-            <div class="card card-files">
+            <div class="stat-card card-files">
                 <div class="card-icon"><i class="fas fa-lock"></i></div>
                 <div class="card-title">Fichiers sécurisés</div>
                 <div class="card-value">{{ $stats['secure_files'] ?? 0 }}</div>
             </div>
         </div>
 
-        <div class="card" style="padding: 25px; background: white; border-radius: 12px;">
-            <h4 style="margin-bottom: 5px; font-family: sans-serif; color: #333;">Activité des documents</h4>
-            <p style="font-size: 12px; color: #666; margin-bottom: 25px;">Documents validés et rejetés par mois.</p>
-            <div style="position: relative; height: 300px; width: 100%;">
-                <canvas id="documentBarChart"></canvas>
-            </div>
-        </div>
-
+        {{-- 3. SECTION TABLEAU (MILIEU) --}}
         <section class="documents-section">
             <div class="section-header">
                 <h3>Tous les documents ({{ $documents->count() }})</h3>
@@ -267,7 +250,7 @@
                 <tbody id="documentsTable">
                     @forelse($documents as $document)
                     <tr>
-                        <td>{{ $document->titre }}</td>
+                        <td class="doc-title">{{ $document->titre }}</td>
                         <td>{{ $document->user->name ?? 'Anonyme' }}</td>
                         <td>{{ $document->created_at->format('d/m/Y') }}</td>
                         <td>
@@ -308,6 +291,15 @@
             </table>
         </section>
 
+        {{-- 4. SECTION GRAPHIQUE (BAS) --}}
+        <div class="graph-card">
+            <h4 style="margin-bottom: 5px; color: #333;">Activité des documents</h4>
+            <p style="font-size: 12px; color: #666; margin-bottom: 25px;">Documents validés et rejetés par mois.</p>
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="documentBarChart"></canvas>
+            </div>
+        </div>
+
         <footer>
             <p>&copy; {{ date('Y') }} Gest-docs. Tous droits réservés.</p>
         </footer>
@@ -316,6 +308,22 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // --- LOGIQUE DE RECHERCHE ---
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('keyup', function() {
+            const filter = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('#documentsTable tr');
+
+            rows.forEach(row => {
+                const title = row.querySelector('.doc-title');
+                if (title) {
+                    const textValue = title.textContent || title.innerText;
+                    row.style.display = textValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            });
+        });
+
+        // --- LOGIQUE DU GRAPHIQUE ---
         const ctx = document.getElementById('documentBarChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
