@@ -16,9 +16,9 @@
         <div class="footer-col">
             <h4>suivez-nous</h4>
             <div class="social-icons">
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-twitter"></i>
-                <i class="fab fa-linkedin"></i>
+                <a href="https://web.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://wa.me/qr/5M4BTRBBBIRUH1" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.linkedin.com/feed/" target="_blank"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
         <div class="footer-col">

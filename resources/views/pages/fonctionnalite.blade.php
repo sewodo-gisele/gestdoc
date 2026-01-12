@@ -105,7 +105,7 @@
             <div class="banner-text">
                 <h1 class="banner-title">Simplifiez la Gestion de Vos Documents</h1>
                 <p class="banner-description">Centralisez, organisez et sécurisez tous vos fichiers en un seul endroit.</p>
-                <a href="#" class="btn-primary-custom">Commencer Maintenant</a>
+                <a href="{{ route('auth.register') }}" class="btn-primary-custom">Commencer Maintenant</a>
             </div>
             <div class="banner-image">
                 <img src="{{ asset('assets/images/image8.jpg') }}" alt="Personne travaillant sur un ordinateur">

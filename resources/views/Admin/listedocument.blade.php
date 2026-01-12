@@ -15,7 +15,7 @@
 
 @section('content')
     <div class="header">
-        <h2>Liste des documents</h2>
+        <h2>Liste des utilisateurs</h2>
         <div class="user-info">
             <div class="user-avatar">AD</div>
             <span>Admin</span>

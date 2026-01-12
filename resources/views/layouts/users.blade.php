@@ -69,6 +69,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid #fff; /* Ajout d'une petite bordure pour détacher le badge */
         }
 
         .user-avatar {
@@ -129,14 +130,8 @@
                 margin-left: 70px;
                 width: calc(100% - 70px);
             }
-            
-            .header {
-                padding: 0 15px;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
+            .header { padding: 0 15px; }
+            .main-content { padding: 20px; }
         }
     </style>
     @stack('styles')
@@ -145,18 +140,28 @@
     <div class="page-with-sidebar">
         {{-- Sidebar utilisateur --}}
         <x-usersidebar />        
+
         {{-- Contenu principal --}}
         <div class="content-wrapper">
-            <!-- Header -->
             <div class="header">
                 <div class="logo-header">
                     <i class="fa-solid fa-folder"></i> Gest-Docs
                 </div>
+                
                 <div class="header-right">
                     <div class="notification-bell" id="notificationBell">
                         <i class="fa-regular fa-bell" style="font-size: 1.2rem; color: #6b7280;"></i>
-                        <span class="notification-badge" id="notificationCount">3</span>
+                        
+                        @auth
+                            {{-- @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp --}}
+                            {{-- @if($unreadCount > 0) --}}
+                                <span class="notification-badge" id="notificationCount">
+                                    {{-- {{ $unreadCount > 99 ? '99+' : $unreadCount }} --}}
+                                </span>
+                            @endif
+                        {{-- @endauth --}}
                     </div>
+
                     <div class="user-avatar">
                         @auth
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1e3a8a&color=fff" alt="{{ Auth::user()->name }}">
@@ -167,7 +172,6 @@
                 </div>
             </div>
 
-            <!-- Contenu de la page -->
             <main class="main-content">
                 @yield('content')
             </main>

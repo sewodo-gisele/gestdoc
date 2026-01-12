@@ -26,9 +26,46 @@
                 <tr>
                     <th>Fichier</th>
                     <td>
-                        <a href="{{ route('documents.download', $document->id) }}" class="btn btn-sm btn-success">
-                            <i class="fas fa-download"></i> Télécharger le fichier
-                        </a>
+                        <style>
+    .btn-action-container {
+        display: inline-flex;
+        gap: 8px;
+    }
+
+    .btn-modern {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 50px; /* Forme pilule très moderne */
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        border: none;
+        color: white !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Style Vert (Télécharger) */
+    .btn-modern-download {
+        background: #2ecc71;
+    }
+    .btn-modern-download:hover {
+        background: #27ae60;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+    }
+
+    .btn-modern i {
+        margin-right: 7px;
+    }
+</style>
+
+<div class="btn-action-container">
+    <a href="{{ route('documents.download', $document->id) }}" class="btn-modern btn-modern-download">
+        <i class="fas fa-download"></i> Télécharger le fichier
+    </a>
+</div>
                     </td>
                 </tr>
             </table>
