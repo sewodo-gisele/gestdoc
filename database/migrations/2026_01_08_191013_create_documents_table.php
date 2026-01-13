@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->string('titre');
             $table->string('chemin_fichier');
             $table->enum('statut', ['en attente', 'validé', 'rejeté'])->default('en attente');
+            $table->text('commentaire_rejet')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             // $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade');
             $table->foreignId('categorie_id')->nullable()->constrained()->onDelete('set null');

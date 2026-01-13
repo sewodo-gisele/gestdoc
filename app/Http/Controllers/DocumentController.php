@@ -87,11 +87,20 @@ class DocumentController extends Controller
         return redirect()->back()->with('success', 'Document approuvé avec succès !');
     }
 
-    public function rejected($id)
+    public function rejected(Request $request, $id)
     {
-        $document = Document::findOrFail($id);
-        $document->delete();
+        $request->validate([
+        'commentaire' => 'required|string|max:500',
+    ]);
 
-        return redirect()->back()->with('success', 'Document rejeté avec succès !');
+    $document = Document::findOrFail($id);
+    
+    // On met à jour le statut et on enregistre le commentaire
+    $document->update([
+        'statut' => 'rejeté',
+        'commentaire_rejet' => $request->commentaire
+    ]);
+
+    return redirect()->back()->with('success', 'Document rejeté avec motif enregistré.');
     }
 }

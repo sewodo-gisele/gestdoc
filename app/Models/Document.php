@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model {
     use HasFactory;
 
-    protected $fillable = ['titre', 'chemin_fichier', 'statut', 'user_id', 'categorie_id'];
+    protected $fillable = ['titre', 'chemin_fichier', 'statut', 'user_id', 'categorie_id', 'commentaire_rejet'];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
