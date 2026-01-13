@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ... Tes styles existants ne changent pas ... */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f5f7fa; color: #333; min-height: 100vh; }
         .main-content { padding: 25px; }
@@ -37,13 +36,18 @@
         .bg-danger { background: #fee2e2; color: #991b1b; }
         .bg-warning { background: #fef9c3; color: #854d0e; }
         .actions-cell { display: flex; gap: 10px; align-items: center; }
-        .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: #6b7280; }
+        .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: #6b7280; transition: 0.2s; }
+        .btn-action:hover { transform: scale(1.2); }
         .graph-card { padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); border: 1px solid #eaeaea; }
         footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 0.9rem; margin-top: 40px; }
+
+        /* Styles Modale Preview */
+        #previewModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .preview-container { background: white; width: 90%; height: 90%; border-radius: 15px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .preview-header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
     </style>
 
     <main class="main-content">
-        {{-- 1. HEADER --}}
         <div class="header">
             <h2>Tableau de bord Administrateur</h2>
             <div class="user-info">
@@ -61,7 +65,6 @@
             </div>
         </div>
 
-        {{-- 2. CARTES STATS --}}
         <div class="dashboard-cards">
             <div class="stat-card card-documents">
                 <div class="card-icon"><i class="fas fa-file-alt"></i></div>
@@ -82,7 +85,6 @@
             </div>
         </div>
 
-        {{-- 3. SECTION TABLEAU --}}
         <section class="documents-section">
             <div class="section-header">
                 <h3>Tous les documents ({{ $documents->count() }})</h3>
@@ -110,6 +112,12 @@
                             </span>
                         </td>
                         <td class="actions-cell">
+                            <button type="button" class="btn-action" style="color: #6366f1;" 
+                                    onclick="openPreview('{{ asset('storage/' . $document->chemin_fichier) }}', '{{ addslashes($document->titre) }}')" 
+                                    title="Aperçu">
+                                <i class="fas fa-eye"></i>
+                            </button>
+
                             <a href="{{ route('documents.download', $document->id) }}" class="btn-action" style="color: #3b82f6;" title="Télécharger">
                                 <i class="fas fa-download"></i>
                             </a>
@@ -141,7 +149,6 @@
             </table>
         </section>
 
-        {{-- 4. SECTION GRAPHIQUE --}}
         <div class="graph-card">
             <h4 style="margin-bottom: 5px; color: #333;">Activité des documents</h4>
             <p style="font-size: 12px; color: #666; margin-bottom: 25px;">Documents validés et rejetés par mois.</p>
@@ -172,8 +179,31 @@
     </div>
 </div>
 
+<div id="previewModal">
+    <div class="preview-container">
+        <div class="preview-header">
+            <h3 id="previewTitle" style="color: #1e293b; font-size: 1.2rem;">Aperçu du document</h3>
+            <button onclick="closePreview()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+        </div>
+        <iframe id="previewFrame" style="flex: 1; width: 100%; border: none;"></iframe>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // --- LOGIQUE PREVIEW ---
+    function openPreview(url, titre) {
+        document.getElementById('previewTitle').innerText = titre;
+        document.getElementById('previewFrame').src = url;
+        document.getElementById('previewModal').style.display = 'flex';
+    }
+
+    function closePreview() {
+        document.getElementById('previewModal').style.display = 'none';
+        document.getElementById('previewFrame').src = '';
+    }
+
+    // --- LOGIQUE REJET ---
     function openRejectModal(id, titre) {
         document.getElementById('rejectModal').style.display = 'flex';
         document.getElementById('modalTitle').innerText = "Rejeter : " + titre;
@@ -182,6 +212,12 @@
 
     function closeRejectModal() {
         document.getElementById('rejectModal').style.display = 'none';
+    }
+
+    // Fermer les modales au clic extérieur
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('previewModal')) closePreview();
+        if (event.target == document.getElementById('rejectModal')) closeRejectModal();
     }
 
     document.addEventListener('DOMContentLoaded', function() {
