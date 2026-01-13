@@ -59,5 +59,8 @@ Route::get('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'sh
 Route::get('/users/{id}/edit', [App\Http\Controllers\Users\UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [App\Http\Controllers\Users\UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+Route::put('/documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+
 
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');

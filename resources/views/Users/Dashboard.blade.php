@@ -79,7 +79,7 @@
         border-left: 3px solid #ef4444;
     }
 
-    .doc-actions { display: flex; gap: 8px; }
+    .doc-actions { display: flex; gap: 8px; align-items: center; }
     .btn-doc {
         padding: 6px 12px;
         border-radius: 6px;
@@ -87,10 +87,16 @@
         color: white !important;
         font-size: 13px;
         transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 35px;
+        height: 32px;
     }
     .btn-download-style { background: #27ae60; }
     .btn-view-style { background: #3498db; }
-    .btn-doc:hover { opacity: 0.8; transform: translateY(-1px); }
+    .btn-edit-style { background: #f59e0b; }
+    .btn-doc:hover:not(.disabled) { opacity: 0.8; transform: translateY(-1px); }
 </style>
 @endpush
 
@@ -138,7 +144,6 @@
                     <tr>
                         <td style="font-weight: 500;">
                             {{ $doc->titre }}
-                            {{-- AFFICHAGE DU MOTIF SI REJETÉ --}}
                             @if($doc->statut == 'rejeté' && $doc->commentaire_rejet)
                                 <div class="rejection-reason">
                                     <i class="fas fa-circle-exclamation"></i> <strong>Motif :</strong> {{ $doc->commentaire_rejet }}
@@ -153,10 +158,24 @@
                         </td>
                         <td>
                             <div class="doc-actions">
+                                {{-- LOGIQUE DU BOUTON MODIFIER / CADENAS --}}
+                                @if($doc->statut == 'validé')
+                                    <span class="btn-doc disabled" style="background: #94a3b8; cursor: not-allowed;" title="Document validé, modification impossible">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                @else
+                                    <a href="{{ route('documents.edit', $doc->id) }}" class="btn-doc btn-edit-style" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @endif
+
+                                {{-- BOUTON TÉLÉCHARGER --}}
                                 <a href="{{ route('documents.download', $doc->id) }}" class="btn-doc btn-download-style" title="Télécharger">
                                     <i class="fas fa-download"></i>
                                 </a>
-                                <a href="{{ route('document.show', $doc->id) }}" class="btn-doc btn-view-style" title="Voir">
+
+                                {{-- BOUTON VOIR --}}
+                                <a href="{{ route('document.show', $doc->id) }}" class="btn-doc btn-view-style" title="Voir les détails">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>

@@ -83,10 +83,12 @@
                         </span>
                     </td>
                     <td class="actions-cell">
+                        {{-- Bouton Télécharger --}}
                         <a href="{{ route('documents.download', $document->id) }}" class="btn-action" style="color: #3b82f6;" title="Télécharger">
                             <i class="fas fa-download"></i>
                         </a>
 
+                        {{-- Bouton Approuver --}}
                         @if($document->statut !== 'Approuvé')
                         <form action="{{ route('documents.approuved', $document->id) }}" method="POST" style="display:inline;">
                             @csrf
@@ -97,15 +99,7 @@
                         </form>
                         @endif
 
-                        @if($document->statut !== 'Rejeté')
-                        <form action="{{ route('documents.rejected', $document->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-action" style="color: #ef4444;" title="Rejeter">
-                                <i class="fas fa-xmark"></i>
-                            </button>
-                        </form>
-                        @endif
+                        {{-- Le bouton Rejeter a été supprimé d'ici --}}
                     </td>
                 </tr>
                 @empty
