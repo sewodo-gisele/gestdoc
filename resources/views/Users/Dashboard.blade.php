@@ -12,14 +12,12 @@
         overflow-x: hidden;
     }
 
-    /* --- TITRE BIENVENUE LARGE --- */
     .welcome-title {
-        font-size: 2rem; /* Format large */
+        font-size: 2rem;
         margin-bottom: 20px;
         color: #1a1a1a;
     }
 
-    /* --- ARRANGEMENT DU HEADER --- */
     .main-header { 
         display: flex; 
         justify-content: flex-start; 
@@ -33,7 +31,6 @@
         font-size: 1.8rem;
     }
 
-    /* Stats */
     .stats { 
         display: grid; 
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -53,7 +50,6 @@
     .card h4 { margin: 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; }
     .card p { font-size: 1.8rem; font-weight: bold; margin: 10px 0 0; color: #1e3a8a; }
 
-    /* Tableau */
     .table-container { 
         background: #fff; 
         border-radius: 12px; 
@@ -66,7 +62,23 @@
     th { background: #f8fafc; padding: 15px; text-align: left; color: #1e3a8a; font-weight: 600; }
     td { padding: 15px; border-top: 1px solid #f1f5f9; vertical-align: middle; }
 
-    /* Actions boutons */
+    /* Badges de statut */
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
+    .status-valide { background: #dcfce7; color: #166534; }
+    .status-rejete { background: #fee2e2; color: #991b1b; }
+    .status-attente { background: #fef9c3; color: #854d0e; }
+
+    /* Motif de rejet */
+    .rejection-reason {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: #b91c1c;
+        background: #fff5f5;
+        padding: 8px;
+        border-radius: 6px;
+        border-left: 3px solid #ef4444;
+    }
+
     .doc-actions { display: flex; gap: 8px; }
     .btn-doc {
         padding: 6px 12px;
@@ -84,7 +96,7 @@
 
 @section('content')
 <div class="dashboard-container">
-    <h1 class="welcome-title">Bienvenue sur votre tableau de bord, {{ Auth::user()->name }} !</h1>
+    <h1 class="welcome-title">Bienvenue, {{ Auth::user()->name }} !</h1>
 
     <div class="main-header">
         <h2>Mon Tableau de Bord</h2>
@@ -124,19 +136,27 @@
             <tbody>
                 @forelse($documents as $doc)
                     <tr>
-                        <td style="font-weight: 500;">{{ $doc->titre }}</td>
+                        <td style="font-weight: 500;">
+                            {{ $doc->titre }}
+                            {{-- AFFICHAGE DU MOTIF SI REJETÉ --}}
+                            @if($doc->statut == 'rejeté' && $doc->commentaire_rejet)
+                                <div class="rejection-reason">
+                                    <i class="fas fa-circle-exclamation"></i> <strong>Motif :</strong> {{ $doc->commentaire_rejet }}
+                                </div>
+                            @endif
+                        </td>
                         <td style="color: #64748b;">{{ $doc->created_at->format('d/m/Y') }}</td>
                         <td>
-                            <span style="padding: 4px 12px; border-radius: 20px; font-size: 11px; background: #f1f5f9; color: #475569; font-weight: 600;">
+                            <span class="badge {{ $doc->statut == 'validé' ? 'status-valide' : ($doc->statut == 'rejeté' ? 'status-rejete' : 'status-attente') }}">
                                 {{ $doc->statut }}
                             </span>
                         </td>
                         <td>
                             <div class="doc-actions">
-                                <a href="{{ route('documents.download', $doc->id) }}" class="btn-doc btn-download-style">
+                                <a href="{{ route('documents.download', $doc->id) }}" class="btn-doc btn-download-style" title="Télécharger">
                                     <i class="fas fa-download"></i>
                                 </a>
-                                <a href="{{ route('document.show', $doc->id) }}" class="btn-doc btn-view-style">
+                                <a href="{{ route('document.show', $doc->id) }}" class="btn-doc btn-view-style" title="Voir">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </div>
