@@ -1,6 +1,5 @@
 @extends('layouts.users')
 @section('title', 'Tableau de bord Utilisateur')
-
 @push('styles')
 <style>
     /* Structure globale */
@@ -99,6 +98,7 @@
     .btn-doc:hover:not(.disabled) { opacity: 0.8; transform: translateY(-1px); }
 </style>
 @endpush
+
 
 @section('content')
 <div class="dashboard-container">

@@ -4,30 +4,42 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Document;
+use App\Models\Notification; // AJOUT : Import du modèle
+use App\Models\User; // AJOUT : Pour notifier l'admin
 use Illuminate\Support\Facades\Auth;   
 use Illuminate\Support\Facades\Storage;
-use function Illuminate\Log\log;
 
 class DocumentController extends Controller
 {
-    public function index()
+    /**
+     * MODIFICATION : Ajout de la logique de recherche
+     * Le reste de la structure est conservé à l'identique.
+     */
+    public function index(Request $request)
     {
-        $id = 3;
-        // On récupère les docs de l'utilisateur connecté
-        $documents = Document::where('user_id', Auth::id())->latest()->get();
-        
-        $totalCount = $documents->count();
-        $pendingCount = $documents->where('statut', 'en attente')->count();
-        $approvedCount = $documents->where('statut', 'validé')->count();
+        $search = $request->input('search');
+
+        // On part de la requête de base pour l'utilisateur connecté
+        $query = Document::where('user_id', Auth::id());
+
+        // Si une recherche est effectuée
+        if (!empty($search)) {
+            $query->where('titre', 'LIKE', "%{$search}%");
+        }
+
+        $documents = $query->latest()->get();
+
+        // Statistiques calculées sur l'ensemble des documents de l'utilisateur
+        $totalCount = Document::where('user_id', Auth::id())->count();
+        $pendingCount = Document::where('user_id', Auth::id())->where('statut', 'en attente')->count();
+        $approvedCount = Document::where('user_id', Auth::id())->where('statut', 'validé')->count();
 
         return view('Users.Dashboard', compact('documents', 'totalCount', 'pendingCount', 'approvedCount'));
     }
 
     public function documentList()
     {
-        $id = 3;
         $documents = Document::where('user_id', Auth::id())->latest()->get();
-        
         $totalCount = $documents->count();
         $pendingCount = $documents->where('statut', 'en attente')->count();
         $approvedCount = $documents->where('statut', 'validé')->count();
@@ -47,15 +59,23 @@ class DocumentController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('documents', $filename, 'public');
             
-            log('info', ['message' => 'nom du document uploader : ' . $request->file]);
-
-            Document::create([
+            $document = Document::create([
                 'titre' => $request->titre,
                 'chemin_fichier' => $path,
                 'user_id' => Auth::id(),
                 'statut' => 'En attente',
                 'categorie_id' => null 
             ]);
+
+            // NOTIFICATION POUR L'ADMIN (quand un doc est déposé)
+            $admin = User::where('role', 'admin')->first(); 
+            if($admin) {
+                Notification::create([
+                    'user_id' => $admin->id,
+                    'message' => "📄 Nouveau document déposé par " . Auth::user()->name . " : " . $request->titre,
+                    'lu' => false
+                ]);
+            }
 
             return redirect()->back()->with('success', 'Document téléversé avec succès !');
         }
@@ -79,6 +99,13 @@ class DocumentController extends Controller
         $document->statut = 'validé';
         $document->save();
 
+        // NOTIFICATION POUR L'UTILISATEUR (Validation)
+        Notification::create([
+            'user_id' => $document->user_id,
+            'message' => "✅ Votre document '{$document->titre}' a été validé avec succès !",
+            'lu' => false
+        ]);
+
         return redirect()->back()->with('success', 'Document approuvé avec succès !');
     }
 
@@ -89,20 +116,23 @@ class DocumentController extends Controller
         ]);
 
         $document = Document::findOrFail($id);
-        
         $document->update([
             'statut' => 'rejeté',
             'commentaire_rejet' => $request->commentaire
         ]);
 
+        // NOTIFICATION POUR L'UTILISATEUR (Rejet)
+        Notification::create([
+            'user_id' => $document->user_id,
+            'message' => "❌ Votre document '{$document->titre}' a été rejeté. Motif : " . $request->commentaire,
+            'lu' => false
+        ]);
+
         return redirect()->back()->with('success', 'Document rejeté avec motif enregistré.');
     }
 
-    // --- NOUVELLES FONCTIONS DE MODIFICATION ---
-
     public function edit($id)
     {
-        // On vérifie que le document appartient bien à l'utilisateur connecté pour éviter les bugs de sécurité
         $document = Document::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('Users.edit', compact('document'));
     }
@@ -114,25 +144,30 @@ class DocumentController extends Controller
             'file' => 'nullable|mimes:pdf,jpg,png,docx|max:5120',
         ]);
 
-        // Sécurité : Seul le propriétaire peut modifier son propre document
         $document = Document::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         if ($request->hasFile('file')) {
-            // Supprimer l'ancien fichier pour ne pas encombrer le serveur
             Storage::disk('public')->delete($document->chemin_fichier);
-            
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('documents', $filename, 'public');
-            
             $document->chemin_fichier = $path;
         }
 
         $document->titre = $request->titre;
-        $document->statut = 'En attente'; // Reset le statut pour que l'admin re-valide le document corrigé
+        $document->statut = 'En attente';
         $document->save();
 
-        // Redirection vers le dashboard (vérifie bien que le nom de ta route est 'dashboard')
+        // NOTIFICATION POUR L'ADMIN (Correction d'un doc rejeté)
+        $admin = User::where('role', 'admin')->first();
+        if($admin) {
+            Notification::create([
+                'user_id' => $admin->id,
+                'message' => "🔄 " . Auth::user()->name . " a modifié le document rejeté : " . $document->titre,
+                'lu' => false
+            ]);
+        }
+
         return redirect()->route('dashboard')->with('success', 'Document mis à jour avec succès !');
     }
 }

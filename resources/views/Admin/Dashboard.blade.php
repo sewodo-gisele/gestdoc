@@ -16,6 +16,8 @@
         .search-bar input { border: none; outline: none; flex: 1; padding: 5px; font-size: 0.95rem; background: transparent; }
         .search-bar button { background: none; border: none; color: #7f8c8d; cursor: pointer; }
         .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #3498db, #2c3e50); display: flex; align-items: center; justify-content: center; font-weight: 600; color: white; box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3); }
+        
+        /* Dashboard Cards */
         .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
         .stat-card { background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; border: 1px solid #eaeaea; }
         .stat-card:hover { transform: translateY(-5px); }
@@ -25,23 +27,32 @@
         .card-files .card-icon { background-color: #f9f0f7; color: #9b59b6; }
         .card-title { font-size: 1rem; color: #7f8c8d; margin-bottom: 10px; font-weight: 600; }
         .card-value { font-size: 2.5rem; font-weight: 700; color: #2c3e50; }
+
+        /* Filtrage */
+        .filter-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 8px 16px; border-radius: 25px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 13px; font-weight: 600; color: #64748b; transition: all 0.2s; }
+        .filter-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+        .filter-btn:hover:not(.active) { background: #f1f5f9; }
+
+        /* Table Section */
         .documents-section { background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); border: 1px solid #eaeaea; }
         .section-header { margin-bottom: 25px; }
         .section-header h3 { font-size: 1.4rem; color: #2c3e50; font-weight: 700; }
         table { width: 100%; border-collapse: collapse; }
         th { padding: 15px; text-align: left; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #eee; font-size: 0.9rem; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid #eee; color: #2c3e50; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: capitalize; }
         .bg-success { background: #dcfce7; color: #166534; }
         .bg-danger { background: #fee2e2; color: #991b1b; }
         .bg-warning { background: #fef9c3; color: #854d0e; }
         .actions-cell { display: flex; gap: 10px; align-items: center; }
         .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: #6b7280; transition: 0.2s; }
         .btn-action:hover { transform: scale(1.2); }
+        
         .graph-card { padding: 25px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); border: 1px solid #eaeaea; }
         footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 0.9rem; margin-top: 40px; }
 
-        /* Styles Modale Preview */
+        /* Modals */
         #previewModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
         .preview-container { background: white; width: 90%; height: 90%; border-radius: 15px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
         .preview-header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
@@ -56,11 +67,7 @@
                     <button id="searchButton"><i class="fas fa-search"></i></button>
                 </div>
                 <div class="user-avatar">
-                    @auth
-                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                    @else
-                        AD
-                    @endauth
+                    @auth {{ strtoupper(substr(Auth::user()->name, 0, 2)) }} @else AD @endauth
                 </div>
             </div>
         </div>
@@ -71,13 +78,11 @@
                 <div class="card-title">Documents totaux</div>
                 <div class="card-value">{{ $totalDoc ?? 0 }}</div>
             </div>
-            
             <div class="stat-card card-users">
                 <div class="card-icon"><i class="fas fa-users"></i></div>
                 <div class="card-title">Utilisateurs</div>
                 <div class="card-value">{{ $totalUsers ?? 0 }}</div>
             </div>
-            
             <div class="stat-card card-files">
                 <div class="card-icon"><i class="fas fa-lock"></i></div>
                 <div class="card-title">Fichiers sécurisés</div>
@@ -87,7 +92,14 @@
 
         <section class="documents-section">
             <div class="section-header">
-                <h3>Tous les documents ({{ $documents->count() }})</h3>
+                <h3>Gestion des documents</h3>
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="filterByStatus('all', this)">Tous</button>
+                <button class="filter-btn" onclick="filterByStatus('en attente', this)">En attente</button>
+                <button class="filter-btn" onclick="filterByStatus('validé', this)">Validés</button>
+                <button class="filter-btn" onclick="filterByStatus('rejeté', this)">Rejetés</button>
             </div>
             
             <table>
@@ -102,7 +114,7 @@
                 </thead>
                 <tbody id="documentsTable">
                     @forelse($documents as $document)
-                    <tr>
+                    <tr class="document-row" data-status="{{ strtolower($document->statut) }}">
                         <td class="doc-title">{{ $document->titre }}</td>
                         <td>{{ $document->user->name ?? 'Anonyme' }}</td>
                         <td>{{ $document->created_at->format('d/m/Y') }}</td>
@@ -151,7 +163,6 @@
 
         <div class="graph-card">
             <h4 style="margin-bottom: 5px; color: #333;">Activité des documents</h4>
-            <p style="font-size: 12px; color: #666; margin-bottom: 25px;">Documents validés et rejetés par mois.</p>
             <div style="position: relative; height: 300px; width: 100%;">
                 <canvas id="documentBarChart"></canvas>
             </div>
@@ -163,17 +174,14 @@
     </main>
 
 <div id="rejectModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
-    <div style="background:white; padding:30px; border-radius:15px; width:450px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);">
-        <h3 id="modalTitle" style="margin-bottom:15px; color:#1e293b;">Motif du rejet</h3>
+    <div style="background:white; padding:30px; border-radius:15px; width:450px;">
+        <h3 id="modalTitle" style="margin-bottom:15px;">Motif du rejet</h3>
         <form id="rejectForm" method="POST">
-            @csrf
-            @method('DELETE')
-            <textarea name="commentaire" required placeholder="Expliquez pourquoi le document est refusé..." 
-                      style="width:100%; height:120px; border-radius:10px; border:1px solid #e2e8f0; padding:12px; font-size:14px; outline:none; font-family:inherit;"></textarea>
-            
+            @csrf @method('DELETE')
+            <textarea name="commentaire" required placeholder="Expliquez pourquoi..." style="width:100%; height:120px; border-radius:10px; border:1px solid #e2e8f0; padding:12px; outline:none;"></textarea>
             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
-                <button type="button" onclick="closeRejectModal()" style="padding:10px 18px; border-radius:8px; border:1px solid #cbd5e1; background:white; cursor:pointer; font-weight:600;">Annuler</button>
-                <button type="submit" style="padding:10px 18px; border-radius:8px; border:none; background:#ef4444; color:white; cursor:pointer; font-weight:600;">Confirmer le rejet</button>
+                <button type="button" onclick="closeRejectModal()" style="padding:10px 18px; border-radius:8px; border:1px solid #cbd5e1; background:white; cursor:pointer;">Annuler</button>
+                <button type="submit" style="padding:10px 18px; border-radius:8px; border:none; background:#ef4444; color:white; cursor:pointer;">Confirmer</button>
             </div>
         </form>
     </div>
@@ -182,22 +190,38 @@
 <div id="previewModal">
     <div class="preview-container">
         <div class="preview-header">
-            <h3 id="previewTitle" style="color: #1e293b; font-size: 1.2rem;">Aperçu du document</h3>
-            <button onclick="closePreview()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+            <h3 id="previewTitle">Aperçu</h3>
+            <button onclick="closePreview()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
-        <iframe id="previewFrame" style="flex: 1; width: 100%; border: none;"></iframe>
+        <iframe id="previewFrame" style="flex:1; width:100%; border:none;"></iframe>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // --- FILTRAGE PAR STATUT ---
+    function filterByStatus(status, btn) {
+        // Update boutons
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Update lignes
+        const rows = document.querySelectorAll('.document-row');
+        rows.forEach(row => {
+            if (status === 'all' || row.getAttribute('data-status') === status) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
     // --- LOGIQUE PREVIEW ---
     function openPreview(url, titre) {
         document.getElementById('previewTitle').innerText = titre;
         document.getElementById('previewFrame').src = url;
         document.getElementById('previewModal').style.display = 'flex';
     }
-
     function closePreview() {
         document.getElementById('previewModal').style.display = 'none';
         document.getElementById('previewFrame').src = '';
@@ -209,50 +233,35 @@
         document.getElementById('modalTitle').innerText = "Rejeter : " + titre;
         document.getElementById('rejectForm').action = "/documents/rejected/" + id;
     }
+    function closeRejectModal() { document.getElementById('rejectModal').style.display = 'none'; }
 
-    function closeRejectModal() {
-        document.getElementById('rejectModal').style.display = 'none';
+    // Click outside
+    window.onclick = function(e) {
+        if (e.target == document.getElementById('previewModal')) closePreview();
+        if (e.target == document.getElementById('rejectModal')) closeRejectModal();
     }
 
-    // Fermer les modales au clic extérieur
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('previewModal')) closePreview();
-        if (event.target == document.getElementById('rejectModal')) closeRejectModal();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- LOGIQUE DE RECHERCHE ---
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keyup', function() {
-            const filter = searchInput.value.toLowerCase();
-            const rows = document.querySelectorAll('#documentsTable tr');
-            rows.forEach(row => {
-                const title = row.querySelector('.doc-title');
-                if (title) {
-                    const textValue = title.textContent || title.innerText;
-                    row.style.display = textValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-                }
-            });
+    // --- RECHERCHE ---
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        document.querySelectorAll('.document-row').forEach(row => {
+            const title = row.querySelector('.doc-title').textContent.toLowerCase();
+            row.style.display = title.includes(filter) ? "" : "none";
         });
+    });
 
-        // --- LOGIQUE DU GRAPHIQUE ---
-        const ctx = document.getElementById('documentBarChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-                datasets: [
-                    { label: 'Validés', data: [20, 160, 120, 80, 140, 160], backgroundColor: '#bae6fd', borderRadius: 5, barThickness: 20 },
-                    { label: 'Rejetés', data: [10, 20, 15, 5, 12, 10], backgroundColor: '#22d3ee', borderRadius: 5, barThickness: 20 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } },
-                scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 80 } }, x: { grid: { display: false } } }
-            }
-        });
+    // --- CHART ---
+    const ctx = document.getElementById('documentBarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+            datasets: [
+                { label: 'Validés', data: [20, 160, 120, 80, 140, 160], backgroundColor: '#bae6fd', borderRadius: 5 },
+                { label: 'Rejetés', data: [10, 20, 15, 5, 12, 10], backgroundColor: '#22d3ee', borderRadius: 5 }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
     });
 </script>
 @endsection

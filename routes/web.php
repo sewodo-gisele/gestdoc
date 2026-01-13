@@ -63,4 +63,10 @@ Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('d
 Route::put('/documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
 
 
+Route::get('/notifications/mark-as-read', function() {
+    \App\Models\Notification::where('user_id', auth()->id())->update(['lu' => true]);
+    return response()->json(['success' => true]);
+})->name('notifications.read')->middleware('auth');
+
+
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
