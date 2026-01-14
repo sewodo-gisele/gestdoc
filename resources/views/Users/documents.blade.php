@@ -3,227 +3,248 @@
 
 @push('styles')
     <style>
-        /* --- STRUCTURE GLOBALE --- */
-        * {
-            box-sizing: border-box;
-        }
+/* --- STRUCTURE GLOBALE --- */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
 
-        .dashboard-container {
-            width: 100%;
-            padding: 20px;
-            background-color: #f4f7fe;
-            min-height: 100vh;
-        }
+.dashboard-container {
+    width: 100%;
+    padding: 25px;
+    background-color: #f4f7fe;
+    min-height: 100vh;
+}
 
-        /* --- HEADER (TITRE + RECHERCHE + BOUTON) --- */
-        .main-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
+/* --- HEADER (TITRE + RECHERCHE + BOUTON) --- */
+.main-header-row {
+    margin-bottom: 30px;
+}
 
-        .header-left-group {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            flex: 1;
-        }
+.header-left-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
-        .header-left-group h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #1e3a8a;
-            white-space: nowrap;
-        }
+.header-left-group h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #1e3a8a;
+    font-weight: 700;
+}
 
-        .search-section {
-            flex: 1;
-            max-width: 450px;
-        }
+/* --- SECTION RECHERCHE --- */
+.search-section {
+    flex: 1;
+    max-width: 500px;
+}
 
-        #filterForm {
-            display: flex;
-            gap: 8px;
-        }
+#filterForm {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
-        #searchInput {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            outline: none;
-            transition: 0.3s;
-        }
+#searchInput {
+    flex: 1;
+    padding: 11px 15px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 14px;
+}
 
-        #searchInput:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+#searchInput:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
 
-        #searchBtn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
+/* --- BOUTON RECHERCHE (BT) --- */
+.bt {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+    white-space: nowrap;
+}
 
-        /* --- BOUTON AJOUTER --- */
-        .btn-add-doc {
-            background: #10b981;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+.bt:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.2);
+}
 
-        .btn-add-doc:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
+.bt:active {
+    transform: translateY(0);
+}
 
-        /* --- SECTION FORMULAIRE D'AJOUT (IN-LINE) --- */
-        #uploadContainer {
-            display: none;
-            /* Masqué par défaut */
-            animation: fadeInDown 0.4s ease-out;
-            margin-bottom: 30px;
-        }
+/* --- BOUTON AJOUTER --- */
+.btn-add-doc {
+    background: #10b981;
+    color: white;
+    padding: 11px 20px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+.btn-add-doc:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* --- FORMULAIRE D'AJOUT --- */
+#uploadContainer {
+    display: none;
+    animation: fadeInDown 0.4s ease-out;
+    margin-bottom: 30px;
+}
 
-        .upload-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-        .form-grid {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
+.upload-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
 
-        /* --- CARTES DE STATS --- */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+.form-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
 
-        .card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 20px;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .02);
-            text-align: center;
-        }
+/* --- CARTES DE STATS --- */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
 
-        .card h4 {
-            margin: 0;
-            color: #64748b;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
+.card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, .02);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
 
-        .card p {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 5px 0 0;
-            color: #1e3a8a;
-        }
+.card:hover {
+    transform: translateY(-5px);
+}
 
-        /* --- TABLEAU --- */
-        .table-container {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, .02);
-            overflow-x: auto;
-        }
+.card h4 {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 700px;
-        }
+.card p {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 5px 0 0;
+    color: #1e3a8a;
+}
 
-        th {
-            background: #f8fafc;
-            padding: 15px;
-            text-align: left;
-            color: #64748b;
-            font-weight: 600;
-        }
+/* --- TABLEAU --- */
+.table-container {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    overflow-x: auto;
+}
 
-        td {
-            padding: 15px;
-            border-top: 1px solid #f1f5f9;
-            vertical-align: middle;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
 
-        .btn-doc {
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            text-decoration: none;
-            color: white !important;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: 0.2s;
-        }
+th {
+    background: #f8fafc;
+    padding: 18px 15px;
+    text-align: left;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+}
 
-        .btn-download-style {
-            background: #27ae60;
-        }
+td {
+    padding: 15px;
+    border-top: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
 
-        .btn-view-style {
-            background: #3498db;
-        }
+tr:hover {
+    background-color: #fcfdfe;
+}
 
-        @media (max-width: 768px) {
-            .header-left-group {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+/* --- BOUTONS ACTIONS --- */
+.btn-doc {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    color: white !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.2s;
+}
 
-            .main-header-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
+.btn-download-style { background: #27ae60; }
+.btn-download-style:hover { background: #219150; }
 
-            .form-grid {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
+.btn-view-style { background: #3498db; }
+.btn-view-style:hover { background: #2980b9; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .header-left-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-section {
+        max-width: 100%;
+    }
+    
+    .btn-add-doc {
+        justify-content: center;
+    }
+}
     </style>
 @endpush
 
@@ -243,12 +264,11 @@
                 <h2>Mon Tableau de Bord</h2>
 
                 <section class="search-section">
-                    <form action="" method="GET" id="filterForm" style="display: flex; gap: 20px;">
-                        <input type="text" name="search" id="searchInput" placeholder="Rechercher un document..."
-                            value="{{ request('search') }}" class="rerere">
-                        <button type="submit" id="searchBtn">
-                            <i class="fas fa-search" class="rerere" style="background-color: #dcfce7 !important; border-radius:10px"></i>
-                        </button>
+                    <form action="{{ route('user.documents') }}" method="GET" id="filterForm" style="display: flex; gap: 20px;">
+                         <input class="input-search" type="text" name="search" id="searchInput" placeholder="Rechercher par titre..." value="{{ request('search') }}">
+                            <button class="bt" type="submit" id="searchBtn">
+                                <i class="fas fa-search"></i> Rechercher
+                            </button>
                     </form>
                 </section>
 

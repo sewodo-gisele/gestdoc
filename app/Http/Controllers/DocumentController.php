@@ -37,16 +37,28 @@ class DocumentController extends Controller
         return view('Users.Dashboard', compact('documents', 'totalCount', 'pendingCount', 'approvedCount'));
     }
 
-    public function documentList()
-    {
-        $documents = Document::where('user_id', Auth::id())->latest()->get();
-        $totalCount = $documents->count();
-        $pendingCount = $documents->where('statut', 'en attente')->count();
-        $approvedCount = $documents->where('statut', 'validé')->count();
+  public function documentList(Request $request)
+{
+    $search = $request->input('search');
 
-        return view('Users.documents', compact('documents', 'totalCount', 'pendingCount', 'approvedCount'));
+    // 1. On commence par filtrer par l'utilisateur connecté
+    $query = Document::where('user_id', Auth::id());
+
+    // 2. On ajoute la condition de recherche si elle existe
+    if ($request->filled('search')) {
+        $query->where('titre', 'like', '%' . $search . '%');
     }
 
+    // 3. On récupère les documents une seule fois
+    $documents = $query->latest()->get();
+
+    // 4. On calcule les stats à partir de la collection déjà filtrée (ou non)
+    $totalCount = $documents->count();
+    $pendingCount = $documents->where('statut', 'en attente')->count();
+    $approvedCount = $documents->where('statut', 'validé')->count();
+
+    return view('Users.documents', compact('documents', 'totalCount', 'pendingCount', 'approvedCount'));
+}
     public function store(Request $request)
     {
         $request->validate([

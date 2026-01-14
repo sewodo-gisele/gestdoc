@@ -14,9 +14,10 @@ class Dashboard extends Controller
         // Correction de la faute de frappe "docments" -> "documents" pour plus de clarté
         $documents = Document::all();
         $totalDoc = $documents->count();
+        $totaDocValide = Document::where('statut', 'validé')->count();
         $totalUsers = User::count(); // Plus rapide que de tout charger puis compter
 
-        return view('admin.Dashboard', compact('documents', 'totalDoc', 'totalUsers'));
+        return view('admin.Dashboard', compact('documents', 'totalDoc', 'totalUsers', 'totaDocValide'));
     }
 
     public function listedocument(Request $request)

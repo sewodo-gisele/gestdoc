@@ -86,7 +86,7 @@
             <div class="stat-card card-files">
                 <div class="card-icon"><i class="fas fa-lock"></i></div>
                 <div class="card-title">Fichiers sécurisés</div>
-                <div class="card-value">{{ $stats['secure_files'] ?? 0 }}</div>
+                <div class="card-value">{{ $totaDocValide ?? 0 }}</div>
             </div>
         </div>
 
