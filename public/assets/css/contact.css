@@ -39,13 +39,13 @@ p {
 
 /* Bouton */
 .btn-primary {
-    background-color: #2563eb;
+    background-color: #e67e22;
     border: none;
     border-radius: 8px;
 }
 
 .btn-primary:hover {
-    background-color: #1e40af;
+    background-color: #e67e22;
 }
 
 /* Image */

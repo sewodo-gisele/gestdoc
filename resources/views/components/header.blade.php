@@ -1,6 +1,6 @@
 <header class="main-header">
     <div class="logo">
-        <img src="{{ asset('assets/images/logo1.jpeg') }}" alt="Logo Gest-Docs" class="logo-img">
+        <img src="{{ asset('assets/images/log.png') }}" alt="Logo Gest-Docs" class="logo-img">
         <span>Gest-Docs</span>
     </div>
     <nav class="main-nav">

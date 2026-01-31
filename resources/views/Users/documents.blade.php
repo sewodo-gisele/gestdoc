@@ -1,406 +1,250 @@
 @extends('layouts.users')
-@section('title', 'Tableau de bord Utilisateur')
-
-@push('styles')
-    <style>
-/* --- STRUCTURE GLOBALE --- */
-* {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-.dashboard-container {
-    width: 100%;
-    padding: 25px;
-    background-color: #f4f7fe;
-    min-height: 100vh;
-}
-
-/* --- HEADER (TITRE + RECHERCHE + BOUTON) --- */
-.main-header-row {
-    margin-bottom: 30px;
-}
-
-.header-left-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.header-left-group h2 {
-    margin: 0;
-    font-size: 1.6rem;
-    color: #1e3a8a;
-    font-weight: 700;
-}
-
-/* --- SECTION RECHERCHE --- */
-.search-section {
-    flex: 1;
-    max-width: 500px;
-}
-
-#filterForm {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-#searchInput {
-    flex: 1;
-    padding: 11px 15px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    outline: none;
-    transition: all 0.3s ease;
-    background: white;
-    font-size: 14px;
-}
-
-#searchInput:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* --- BOUTON RECHERCHE (BT) --- */
-.bt {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 11px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
-    white-space: nowrap;
-}
-
-.bt:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.2);
-}
-
-.bt:active {
-    transform: translateY(0);
-}
-
-/* --- BOUTON AJOUTER --- */
-.btn-add-doc {
-    background: #10b981;
-    color: white;
-    padding: 11px 20px;
-    border-radius: 10px;
-    border: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-add-doc:hover {
-    background: #059669;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
-}
-
-/* --- FORMULAIRE D'AJOUT --- */
-#uploadContainer {
-    display: none;
-    animation: fadeInDown 0.4s ease-out;
-    margin-bottom: 30px;
-}
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.upload-card {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-}
-
-.form-grid {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    align-items: flex-end;
-}
-
-/* --- CARTES DE STATS --- */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 20px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, .02);
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card h4 {
-    margin: 0;
-    color: #64748b;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.card p {
-    font-size: 2rem;
-    font-weight: 800;
-    margin: 5px 0 0;
-    color: #1e3a8a;
-}
-
-/* --- TABLEAU --- */
-.table-container {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-}
-
-th {
-    background: #f8fafc;
-    padding: 18px 15px;
-    text-align: left;
-    color: #64748b;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 12px;
-}
-
-td {
-    padding: 15px;
-    border-top: 1px solid #f1f5f9;
-    vertical-align: middle;
-}
-
-tr:hover {
-    background-color: #fcfdfe;
-}
-
-/* --- BOUTONS ACTIONS --- */
-.btn-doc {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    text-decoration: none;
-    color: white !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: 0.2s;
-}
-
-.btn-download-style { background: #27ae60; }
-.btn-download-style:hover { background: #219150; }
-
-.btn-view-style { background: #3498db; }
-.btn-view-style:hover { background: #2980b9; }
-
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .header-left-group {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .search-section {
-        max-width: 100%;
-    }
-    
-    .btn-add-doc {
-        justify-content: center;
-    }
-}
-    </style>
-@endpush
+@section('title', 'Tableau de bord - Documents')
 
 @section('content')
-    <div class="dashboard-container">
-
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in-down">
+        
         {{-- Notifications --}}
         @if (session('success'))
-            <div style="padding: 15px; background: #dcfce7; color: #166534; border-radius: 8px; margin-bottom: 20px;">
-                <i class="fas fa-check-circle"></i> {{ session('success') }}
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg shadow-sm flex items-center gap-3">
+                <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                <p class="text-emerald-800 font-medium">{{ session('success') }}</p>
             </div>
         @endif
 
-        {{-- En-tête --}}
-        <div class="main-header-row">
-            <div class="header-left-group" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h2>Mon Tableau de Bord</h2>
-
-                <section class="search-section">
-                    <form action="{{ route('user.documents') }}" method="GET" id="filterForm" style="display: flex; gap: 20px;">
-                         <input class="input-search" type="text" name="search" id="searchInput" placeholder="Rechercher par titre..." value="{{ request('search') }}">
-                            <button class="bt" type="submit" id="searchBtn">
-                                <i class="fas fa-search"></i> Rechercher
-                            </button>
-                    </form>
-                </section>
-
-                <button class="btn-add-doc" onclick="toggleUploadForm(true)">
-                <i class="fas fa-plus"></i> Nouveau Document
-            </button>
+        {{-- Header & Actions --}}
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Mes Documents</h1>
+                <p class="text-slate-500 mt-1">Gérez et suivez l'état de vos documents administratifs.</p>
             </div>
-
             
+            <button onclick="toggleUploadForm(true)" 
+                class="group bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-md shadow-blue-500/20 transition-all active:scale-95 flex items-center gap-2">
+                <i class="fas fa-plus transition-transform group-hover:rotate-90"></i>
+                <span>Nouveau Document</span>
+            </button>
         </div>
 
-        {{-- FORMULAIRE D'AJOUT (Caché par défaut, apparaît sous le bouton) --}}
-        <div id="uploadContainer">
-            <div class="upload-card">
-                <h3 style="margin-top: 0; color: #1e3a8a; font-size: 1.1rem; margin-bottom: 20px;">
-                    <i class="fas fa-file-upload"></i> Ajouter un nouveau document
-                </h3>
-                <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-grid">
-                        <div style="flex: 2; min-width: 250px;">
-                            <label style="display:block; margin-bottom:5px; font-weight: 600; font-size: 14px;">Titre du
-                                document</label>
-                            <input type="text" name="titre"
-                                style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;"
-                                placeholder="Ex: Rapport d'activité..." required>
-                        </div>
+        {{-- Search Section (Styled as requested) --}}
+        <div class="bg-white p-1 rounded-2xl shadow-sm border border-slate-200">
+            <form action="{{ route('user.documents') }}" method="GET" class="flex flex-col sm:flex-row gap-2 p-2">
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-slate-400"></i>
+                    </div>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        class="block w-full pl-11 pr-4 py-3 bg-slate-50 border-0 text-slate-900 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors placeholder:text-slate-400"
+                        placeholder="Rechercher par titre, référence...">
+                </div>
+                <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl font-medium transition-colors">
+                    Rechercher
+                </button>
+            </form>
+        </div>
 
-                        <div style="display:flex; min-width: 200px;margin-top: 2em;">
-                            <label
-                                style="display:block; margin-bottom:5px; font-weight: 600; font-size: 14px;">Fichier</label>
-                            <input type="file" name="file" required style="font-size: 14px; width: 100%;">
-                            <div style="display: flex; gap: 10px;">
-                                <button type="button" onclick="toggleUploadForm(false)"
-                                    style="padding: 10px 20px; background: #f1f5f9; border:none; border-radius:8px; cursor:pointer; font-weight: 600;">
-                                    Annuler
-                                </button>
-                                <button type="submit"
-                                    style="padding: 10px 20px; background: #3b82f6; color:white; border:none; border-radius:8px; cursor:pointer; font-weight: 600;">
-                                    Téléverser
-                                </button>
+        {{-- Upload Form (Hidden by default) --}}
+        <div id="uploadContainer" class="hidden transform transition-all duration-300 ease-in-out">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        Envoi de document
+                    </h3>
+                    <button onclick="toggleUploadForm(false)" class="text-slate-400 hover:text-red-500 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-slate-700">Titre du document</label>
+                            <input type="text" name="titre" required
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                                placeholder="Ex: Justificatif de domicile">
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-slate-700">Fichier joint</label>
+                            <div class="relative">
+                                <input type="file" name="file" required 
+                                    class="block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all border border-slate-200 rounded-xl cursor-pointer">
                             </div>
                         </div>
+                    </div>
 
-
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="toggleUploadForm(false)" 
+                            class="px-5 py-2.5 rounded-xl text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium transition-colors">
+                            Annuler
+                        </button>
+                        <button type="submit" 
+                            class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all">
+                            Envoyer le fichier
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        {{-- Statistiques --}}
-        <div class="stats">
-            <div class="card">
-                <h4>Total Documents</h4>
-                <p>{{ $totalCount }}</p>
-            </div>
-            <div class="card">
-                <h4>En attente</h4>
-                <p>{{ $pendingCount ?? 0 }}</p>
-            </div>
-            <div class="card">
-                <h4>Approuvés</h4>
-                <p>{{ $approvedCount ?? 0 }}</p>
-            </div>
+        {{-- Stats Grid --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach([
+                ['label' => 'Total Documents', 'count' => $totalCount, 'icon' => 'fa-folder', 'color' => 'blue', 'bg' => 'bg-blue-50', 'text' => 'text-blue-600'],
+                ['label' => 'En attente', 'count' => $pendingCount ?? 0, 'icon' => 'fa-clock', 'color' => 'amber', 'bg' => 'bg-amber-50', 'text' => 'text-amber-600'],
+                ['label' => 'Validés', 'count' => $approvedCount ?? 0, 'icon' => 'fa-check-circle', 'color' => 'emerald', 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600']
+            ] as $stat)
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">{{ $stat['label'] }}</p>
+                            <p class="text-3xl font-bold text-slate-800 mt-2">{{ $stat['count'] }}</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl {{ $stat['bg'] }} {{ $stat['text'] }} flex items-center justify-center text-xl">
+                            <i class="fas {{ $stat['icon'] }}"></i>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
-        {{-- Liste des documents --}}
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nom du fichier</th>
-                        <th>Date d'ajout</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($documents as $doc)
+        {{-- Documents List --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                {{-- Desktop Table --}}
+                <table class="w-full text-left hidden md:table">
+                    <thead class="bg-slate-50/50 border-b border-slate-100">
                         <tr>
-                            <td style="font-weight: 500; color: #1e293b;">{{ $doc->titre }}</td>
-                            <td style="color: #64748b;">{{ $doc->created_at->format('d/m/Y') }}</td>
-                            <td>
-                                <span
-                                    style="padding: 4px 10px; border-radius: 20px; font-size: 12px; background: #f1f5f9; color: #475569;">
-                                    {{ $doc->statut }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="doc-actions" style="display: flex; gap: 8px;">
-                                    <a href="{{ route('documents.download', $doc->id) }}"
-                                        class="btn-doc btn-download-style">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    <a href="{{ route('document.show', $doc->id) }}" class="btn-doc btn-view-style">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Document</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date d'ajout</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($documents as $doc)
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                                            <i class="fas fa-file-alt text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-slate-800 group-hover:text-blue-600 transition-colors">{{ $doc->titre }}</p>
+                                            <p class="text-xs text-slate-400">PDF • 2.4 MB</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-500">
+                                    {{ $doc->created_at->format('d/m/Y') }}
+                                    <span class="block text-xs text-slate-400">{{ $doc->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $statusStyles = [
+                                            'en attente' => 'bg-amber-100 text-amber-700 border-amber-200',
+                                            'validé' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                            'rejeté' => 'bg-red-100 text-red-700 border-red-200',
+                                        ];
+                                        $style = $statusStyles[$doc->statut] ?? 'bg-slate-100 text-slate-700 border-slate-200';
+                                    @endphp
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold border {{ $style }}">
+                                        {{ ucfirst($doc->statut) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('documents.download', $doc->id) }}" class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Télécharger">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <a href="{{ route('document.show', $doc->id) }}" class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Voir les détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center text-slate-400">
+                                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-folder-open text-3xl text-slate-300"></i>
+                                        </div>
+                                        <p class="text-lg font-medium text-slate-600">Aucun document trouvé</p>
+                                        <p class="text-sm">Essayez de modifier votre recherche ou ajoutez un nouveau document.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Mobile Cards View --}}
+            <div class="md:hidden space-y-4 p-4">
+                @foreach($documents as $doc)
+                    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-file-alt"></i>
                                 </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" style="text-align: center; padding: 40px; color: #94a3b8;">
-                                <i class="fas fa-folder-open"
-                                    style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                                Aucun document trouvé.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                <div>
+                                    <h4 class="font-medium text-slate-900">{{ $doc->titre }}</h4>
+                                    <p class="text-xs text-slate-500">{{ $doc->created_at->format('d/m/Y') }}</p>
+                                </div>
+                            </div>
+                            @php
+                                $statusColors = [
+                                    'en attente' => 'text-amber-600 bg-amber-50',
+                                    'validé' => 'text-emerald-600 bg-emerald-50',
+                                    'rejeté' => 'text-red-600 bg-red-50',
+                                ];
+                                $color = $statusColors[$doc->statut] ?? 'text-slate-600 bg-slate-50';
+                            @endphp
+                            <span class="px-2 py-1 rounded text-xs font-medium {{ $color }}">
+                                {{ ucfirst($doc->statut) }}
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                             <a href="{{ route('documents.download', $doc->id) }}" class="flex-1 py-2 text-center text-sm font-medium text-slate-600 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                                <i class="fas fa-download mr-1"></i> Télécharger
+                            </a>
+                            <a href="{{ route('document.show', $doc->id) }}" class="flex-1 py-2 text-center text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                                <i class="fas fa-eye mr-1"></i> Voir
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Pagination (if available) --}}
+            @if(method_exists($documents, 'links'))
+                <div class="px-6 py-4 border-t border-slate-100">
+                    {{ $documents->links() }}
+                </div>
+            @endif
         </div>
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        /**
-         * Alterne l'affichage du formulaire d'ajout
-         * @param {boolean} show
-         */
         function toggleUploadForm(show) {
             const container = document.getElementById('uploadContainer');
-            if (container) {
-                container.style.display = show ? 'block' : 'none';
-                if (show) {
-                    // Scroll fluide vers le formulaire pour mobile
-                    container.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'nearest'
-                    });
-                }
+            if(show) {
+                container.classList.remove('hidden');
+                setTimeout(() => {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Focus first input
+                    container.querySelector('input[name="titre"]').focus();
+                }, 100);
+            } else {
+                container.classList.add('hidden');
             }
         }
     </script>

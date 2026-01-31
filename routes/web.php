@@ -70,3 +70,6 @@ Route::get('/notifications/mark-as-read', function() {
 
 
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+Route::view('/terms', 'pages.terms')->name('terms');
+Route::view('/privacy', 'pages.privacy')->name('privacy');

@@ -151,7 +151,7 @@
 
     <div class="registration-container">
         <div class="logo-container">
-            <img src="{{ asset('assets/images/logo1.jpeg') }}" alt="Logo Gest-Docs">
+            <img src="{{ asset('assets/images/log.png') }}" alt="Logo Gest-Docs">
         </div>
         
         <h1>Inscription à Gest-Docs</h1>
@@ -189,11 +189,12 @@
             </div>
 
             <div class="form-checkbox">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">
-                    J'accepte les <a href="#">Conditions d'utilisation</a> et la <a href="#">Politique de confidentialité</a>
-                </label>
-            </div>
+    <input type="checkbox" id="terms" name="terms" required>
+    <label for="terms">
+        J'accepte les <a href="{{ url('/terms') }}" target="_blank">Conditions d'utilisation</a> 
+        et la <a href="{{ url('/privacy') }}" target="_blank">Politique de confidentialité</a>
+    </label>
+</div>
 
             <button type="submit" class="btn-submit">S'inscrire</button>
         </form>

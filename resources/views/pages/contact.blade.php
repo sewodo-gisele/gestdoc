@@ -103,27 +103,27 @@
 
                     <p class="mb-2">
                         <strong>Email :</strong><br>
-                        contact@site.com
+                        sewodogisele77@gmail.com
                     </p>
 
                     <p class="mb-2">
                         <strong>Adresse :</strong><br>
-                        123 Rue de la Documentation,<br>
-                        75001 Paris, France
+                        85 Rue,<br>
+                        Lome, Togo
                     </p>
 
                     <p class="mb-0">
                         <strong>Disponibilité :</strong><br>
-                        Lun-Ven, 9h-18h CET
+                        Lun-Ven, 8h-18h 
                     </p>
                 </div>
 
                 <div class="card border-0 shadow-sm p-4">
                     <h6 class="fw-bold">Suivez-nous</h6>
                     <div class="d-flex gap-3">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://web.facebook.com/"><i class="bi bi-facebook"></i></a>
+                        <a href="https://wa.me/qr/5M4BTRBBBIRUH1"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://www.linkedin.com/feed/"><i class="bi bi-linkedin"></i></a>
                     </div>
                 </div>
             </div>

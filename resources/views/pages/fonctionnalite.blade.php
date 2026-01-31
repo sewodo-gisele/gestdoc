@@ -47,7 +47,7 @@
             display: inline-block; 
             margin-top: 20px; 
             padding: 12px 24px; 
-            background-color: #3498db; 
+            background-color: #e67e22; 
             color: white; 
             text-decoration: none; 
             border-radius: 4px;
@@ -90,7 +90,7 @@
             display: inline-block; 
             margin-top: 20px; 
             padding: 10px 20px; 
-            background-color: #2ecc71; 
+            background-color: #e67e22; 
             color: white; 
             text-decoration: none; 
             border-radius: 4px;

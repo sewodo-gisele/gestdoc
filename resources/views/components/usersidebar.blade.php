@@ -1,7 +1,7 @@
 <aside class="sidebar" id="sidebar">
     <div class="logo">
         <div class="logo-img">
-            <img src="{{ asset('assets/images/logo1.jpeg') }}" alt="Logo Gest-Docs">
+            <img src="{{ asset('assets/images/log.png') }}" alt="Logo Gest-Docs">
         </div>
         <div class="logo-text">
             <h1>Gest-<span>Docs</span></h1>
